@@ -41,6 +41,7 @@ namespace API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
             });
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,6 +63,13 @@ namespace API
 
             // Sets up routing to controller endpoints
             app.UseRouting();
+
+            // UseCors must be between UseRouting and UseEndpoints. However, when using Authorization, it must also
+            // be before UseAuthorization().
+            app.UseCors(policy => policy.AllowAnyHeader()
+                                        .AllowAnyMethod()
+                                        .WithOrigins("https://localhost:4200")
+            );
 
             // Not doing much at the moment since we have not configured authorization.
             app.UseAuthorization();
