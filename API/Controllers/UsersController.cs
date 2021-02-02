@@ -2,18 +2,16 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-
     // Uses DI to get data from database. Controller has two endpoints:
     //  1. An endpoint to get all users in the DB
     //  2. An endpoint to get a specific user in DB
-    public class UsersController : ControllerBase
+    public class UsersController : BaseApiController
     {
         private readonly DataContext _context;
         public UsersController(DataContext context)
@@ -53,12 +51,14 @@ namespace API.Controllers
         //  4. Convert to aysnc methods.
 
         // ToListAsync() provided by System.Collections.Generic.
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers() {
             return await _context.Users.ToListAsync();
         }
 
         // Endpoint: /api/users/3 -> gets user with id = 3
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<AppUser>> GetUser(int id) {
             return await _context.Users.FindAsync(id);

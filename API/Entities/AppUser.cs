@@ -9,5 +9,9 @@ namespace API.Entities
         // ASP.NET Core Identity uses `UserName` so we should too to save ourselves from having to refactor in the
         // future.
         public string UserName { get; set; }
+
+        public byte[] PasswordHash { get; set; }
+
+        public byte[] PasswordSalt { get; set; }
     }
 }

@@ -1,17 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 using API.Data;
+using API.Interfaces;
+using API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace API
@@ -31,6 +29,27 @@ namespace API
         // classes.
         public void ConfigureServices(IServiceCollection services)
         {
+            // AddSingleton => Created and doesn't stop until app stops
+            // AddScoped => Scoped to lifetime of HTTP request. For the most part when dealin with APIs, this is the
+            //              scope you'll use.
+            // AddTransient => Created and destroyed as soon as method is finished
+
+            // The reason to create the interface is two-fold:
+            //  - makes it very easy to mock the service for testing purpsoes
+            //  - best practice
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["TokenKey"])),
+                        ValidateIssuer = false,   /* issuer is our API server */
+                        ValidateAudience = false  /* audience is our Angular frontend */
+                    };
+                });
+
             services.AddDbContext<DataContext>(options =>
             {
                 options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
@@ -71,6 +90,7 @@ namespace API
                                         .WithOrigins("https://localhost:4200")
             );
 
+            app.UseAuthentication();
             // Not doing much at the moment since we have not configured authorization.
             app.UseAuthorization();
 
