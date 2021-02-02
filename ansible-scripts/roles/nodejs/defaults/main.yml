@@ -1,0 +1,9 @@
+---
+nodejs_version: node_15.x
+nodejs_package: nodejs
+
+# Used only for Debian/Ubuntu
+nodejs_apt_release_channel: main
+nodejs_apt_arch: amd64
+nodejs_apt_repository: "deb [arch={{ nodejs_apt_arch }}] https://deb.nodesource.com/{{ nodejs_version }} {{ ansible_distribution_release }} {{ nodejs_apt_release_channel }}"
+nodejs_apt_gpg_key: https://deb.nodesource.com/gpgkey/nodesource.gpg.key

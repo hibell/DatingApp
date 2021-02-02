@@ -1,0 +1,13 @@
+---
+- hosts: all
+  roles:
+    - role: roles/dotnet-sdk
+    - role: roles/nodejs
+
+  tasks:
+    - name: Install dependencies
+      become: true
+      apt:
+        name:
+          - jq
+        state: present

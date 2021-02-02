@@ -1,0 +1,20 @@
+---
+- name: Ensure dependencies are installed
+  apt:
+    name:
+      - apt-transport-https
+    state: present
+  become: true
+
+- name: Add Microsoft apt key
+  apt_key:
+    url: "{{ dotnet_apt_gpg_key }}"
+    state: present
+  become: true
+
+- name: Add Microsoft repository
+  apt_repository:
+    repo: "{{ dotnet_apt_repository }}"
+    state: present
+    update_cache: true
+  become: true

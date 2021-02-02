@@ -1,0 +1,9 @@
+---
+dotnet_version: 5.0
+dotnet_sdk_package: dotnet-sdk-{{ dotnet_version }}
+
+# Used only for Debian/Ubuntu
+dotnet_apt_release_channel: main
+dotnet_apt_arch: amd64
+dotnet_apt_repository: "deb [arch={{ dotnet_apt_arch }}] https://packages.microsoft.com/{{ ansible_distribution | lower }}/{{ ansible_distribution_version }}/prod {{ ansible_distribution_release }} {{ dotnet_apt_release_channel }}"
+dotnet_apt_gpg_key: https://packages.microsoft.com/keys/microsoft.asc

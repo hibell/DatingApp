@@ -1,0 +1,15 @@
+---
+- include_tasks: setup-Ubuntu.yml
+  when: ansible_os_family == 'Debian'
+
+- name: Install NodeJS
+  package:
+    name: "{{ nodejs_package }}"
+    state: present
+  become: true
+
+- name: Install Angular CLI
+  community.general.npm:
+    name: "@angular/cli"
+    global: yes
+  become: true
